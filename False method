@@ -1,39 +1,4 @@
-{
-  "nbformat": 4,
-  "nbformat_minor": 0,
-  "metadata": {
-    "colab": {
-      "provenance": [],
-      "authorship_tag": "ABX9TyNMobZDTeffHPQ8qC/xSWNc",
-      "include_colab_link": true
-    },
-    "kernelspec": {
-      "name": "python3",
-      "display_name": "Python 3"
-    },
-    "language_info": {
-      "name": "python"
-    }
-  },
-  "cells": [
-    {
-      "cell_type": "markdown",
-      "metadata": {
-        "id": "view-in-github",
-        "colab_type": "text"
-      },
-      "source": [
-        "<a href=\"https://colab.research.google.com/github/Prushaawatt/Prushaawatt/blob/main/False%20method\" target=\"_parent\"><img src=\"https://colab.research.google.com/assets/colab-badge.svg\" alt=\"Open In Colab\"/></a>"
-      ]
-    },
-    {
-      "cell_type": "code",
-      "execution_count": null,
-      "metadata": {
-        "id": "tm5j-i-ZyTPj"
-      },
-      "outputs": [],
-      "source": [
+
         "def false_position_method(func, a, b, tol=1e-6, max_iter=100):\n",
         "    \"\"\"\n",
         "    False Position Method to find the root of the function within the given interval.\n",
@@ -89,3 +54,7 @@
     }
   ]
 }
+
+
+google sheet 
+https://docs.google.com/spreadsheets/d/1iA6S8XVDf1gpuWOVHwGxICoGpc0q1rCV5vX8iTDLBvk/edit?usp=sharing 
