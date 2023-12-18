@@ -1,0 +1,91 @@
+{
+  "nbformat": 4,
+  "nbformat_minor": 0,
+  "metadata": {
+    "colab": {
+      "provenance": [],
+      "authorship_tag": "ABX9TyNMobZDTeffHPQ8qC/xSWNc",
+      "include_colab_link": true
+    },
+    "kernelspec": {
+      "name": "python3",
+      "display_name": "Python 3"
+    },
+    "language_info": {
+      "name": "python"
+    }
+  },
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "view-in-github",
+        "colab_type": "text"
+      },
+      "source": [
+        "<a href=\"https://colab.research.google.com/github/Prushaawatt/Prushaawatt/blob/main/False%20method\" target=\"_parent\"><img src=\"https://colab.research.google.com/assets/colab-badge.svg\" alt=\"Open In Colab\"/></a>"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "id": "tm5j-i-ZyTPj"
+      },
+      "outputs": [],
+      "source": [
+        "def false_position_method(func, a, b, tol=1e-6, max_iter=100):\n",
+        "    \"\"\"\n",
+        "    False Position Method to find the root of the function within the given interval.\n",
+        "\n",
+        "    :param func: The function for which the root needs to be found.\n",
+        "    :param a: The left endpoint of the interval.\n",
+        "    :param b: The right endpoint of the interval.\n",
+        "    :param tol: Tolerance for stopping criterion.\n",
+        "    :param max_iter: Maximum number of iterations.\n",
+        "    :return: Approximate root, number of iterations.\n",
+        "    \"\"\"\n",
+        "\n",
+        "    if func(a) * func(b) > 0:\n",
+        "        raise ValueError(\"The function values at the endpoints must have opposite signs.\")\n",
+        "\n",
+        "    iteration = 0\n",
+        "    while iteration < max_iter:\n",
+        "        c = (a * func(b) - b * func(a)) / (func(b) - func(a))\n",
+        "\n",
+        "        if abs(func(c)) < tol:\n",
+        "            return c, iteration + 1  # Return the root and the number of iterations\n",
+        "\n",
+        "        if func(c) * func(a) < 0:\n",
+        "            b = c\n",
+        "        else:\n",
+        "            a = c\n",
+        "\n",
+        "        iteration += 1\n",
+        "\n",
+        "    raise ValueError(\"False Position Method did not converge within the maximum number of iterations.\")\n",
+        "\n",
+        "# Example usage:\n",
+        "if __name__ == \"__main__\":\n",
+        "    # Define the function\n",
+        "    def f(x):\n",
+        "        return x**3 - 6*x**2 + 11*x - 6\n",
+        "\n",
+        "    # Initial interval [a, b]\n",
+        "    a = 0.5\n",
+        "    b = 4.5\n",
+        "\n",
+        "    # Tolerance and maximum number of iterations\n",
+        "    tolerance = 1e-6\n",
+        "    max_iterations = 100\n",
+        "\n",
+        "    # Apply False Position Method\n",
+        "    root, iterations = false_position_method(f, a, b, tol=tolerance, max_iter=max_iterations)\n",
+        "\n",
+        "    # Display the result\n",
+        "    print(f\"Approximate root: {root}\")\n",
+        "    print(f\"Number of iterations: {iterations}\")\n"
+      ]
+    }
+  ]
+}
