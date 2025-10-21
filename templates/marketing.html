@@ -1,0 +1,275 @@
+{% extends "base.html" %}
+
+{% block title %}Marketing - ERP Demo System{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <h2 class="mb-4"><i class="fas fa-bullhorn"></i> Marketing Management</h2>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Create Campaign</h5>
+            </div>
+            <div class="card-body">
+                <form id="campaignForm">
+                    <div class="mb-3">
+                        <label for="campaign_name" class="form-label">Campaign Name</label>
+                        <input type="text" class="form-control" id="campaign_name" name="name" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="campaign_description" class="form-label">Description</label>
+                        <textarea class="form-control" id="campaign_description" name="description" rows="3"></textarea>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="budget" class="form-label">Budget</label>
+                            <input type="number" class="form-control" id="budget" name="budget" step="0.01">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="status" class="form-label">Status</label>
+                            <select class="form-select" id="status" name="status">
+                                <option value="active">Active</option>
+                                <option value="paused">Paused</option>
+                                <option value="completed">Completed</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="start_date" class="form-label">Start Date</label>
+                            <input type="date" class="form-control" id="start_date" name="start_date" value="{{ date.today().strftime('%Y-%m-%d') }}" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="end_date" class="form-label">End Date</label>
+                            <input type="date" class="form-control" id="end_date" name="end_date" required>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Create Campaign</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Add Lead</h5>
+            </div>
+            <div class="card-body">
+                <form id="leadForm">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="lead_name" class="form-label">Lead Name</label>
+                            <input type="text" class="form-control" id="lead_name" name="name" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="lead_email" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="lead_email" name="email">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="lead_phone" class="form-label">Phone</label>
+                            <input type="tel" class="form-control" id="lead_phone" name="phone">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="company_name" class="form-label">Company</label>
+                            <input type="text" class="form-control" id="company_name" name="company_name">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="lead_status" class="form-label">Status</label>
+                            <select class="form-select" id="lead_status" name="status">
+                                <option value="new">New</option>
+                                <option value="contacted">Contacted</option>
+                                <option value="qualified">Qualified</option>
+                                <option value="converted">Converted</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="source" class="form-label">Source</label>
+                            <select class="form-select" id="source" name="source">
+                                <option value="Website">Website</option>
+                                <option value="Referral">Referral</option>
+                                <option value="Cold Call">Cold Call</option>
+                                <option value="Email Marketing">Email Marketing</option>
+                                <option value="Social Media">Social Media</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-success">Add Lead</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Active Campaigns</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Campaign Name</th>
+                                <th>Description</th>
+                                <th>Budget</th>
+                                <th>Start Date</th>
+                                <th>End Date</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for campaign in campaigns %}
+                            <tr>
+                                <td>{{ campaign.name }}</td>
+                                <td>{{ campaign.description or '-' }}</td>
+                                <td>${{ "%.2f"|format(campaign.budget) if campaign.budget else '-' }}</td>
+                                <td>{{ campaign.start_date.strftime('%Y-%m-%d') if campaign.start_date else '-' }}</td>
+                                <td>{{ campaign.end_date.strftime('%Y-%m-%d') if campaign.end_date else '-' }}</td>
+                                <td>
+                                    <span class="badge bg-{{ 'success' if campaign.status == 'active' else 'warning' if campaign.status == 'paused' else 'secondary' }}">
+                                        {{ campaign.status.title() }}
+                                    </span>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Lead Pipeline</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-sm">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Company</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for lead in leads %}
+                            <tr>
+                                <td>{{ lead.name }}</td>
+                                <td>{{ lead.company_name or '-' }}</td>
+                                <td>
+                                    <span class="badge bg-{{ 'primary' if lead.status == 'new' else 'info' if lead.status == 'contacted' else 'warning' if lead.status == 'qualified' else 'success' }}">
+                                        {{ lead.status.title() }}
+                                    </span>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Marketing Analytics</h5>
+            </div>
+            <div class="card-body">
+                <div class="row text-center">
+                    <div class="col-md-3">
+                        <h4 class="text-primary">{{ campaigns|length }}</h4>
+                        <p class="text-muted">Total Campaigns</p>
+                    </div>
+                    <div class="col-md-3">
+                        <h4 class="text-success">{{ leads|length }}</h4>
+                        <p class="text-muted">Total Leads</p>
+                    </div>
+                    <div class="col-md-3">
+                        <h4 class="text-info">{{ leads|selectattr('status', 'equalto', 'converted')|list|length }}</h4>
+                        <p class="text-muted">Converted Leads</p>
+                    </div>
+                    <div class="col-md-3">
+                        <h4 class="text-warning">${{ "%.2f"|format(campaigns|sum(attribute='budget') or 0) }}</h4>
+                        <p class="text-muted">Total Budget</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.getElementById('campaignForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    const formData = new FormData(this);
+    const data = Object.fromEntries(formData);
+    
+    try {
+        const response = await fetch('/marketing/add_campaign', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data)
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+            alert(result.message);
+            location.reload();
+        } else {
+            alert(result.message);
+        }
+    } catch (error) {
+        alert('An error occurred. Please try again.');
+    }
+});
+
+document.getElementById('leadForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    const formData = new FormData(this);
+    const data = Object.fromEntries(formData);
+    
+    try {
+        const response = await fetch('/marketing/add_lead', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data)
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+            alert(result.message);
+            location.reload();
+        } else {
+            alert(result.message);
+        }
+    } catch (error) {
+        alert('An error occurred. Please try again.');
+    }
+});
+</script>
+{% endblock %}

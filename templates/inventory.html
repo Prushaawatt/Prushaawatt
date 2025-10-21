@@ -1,0 +1,265 @@
+{% extends "base.html" %}
+
+{% block title %}Inventory - ERP Demo System{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <h2 class="mb-4"><i class="fas fa-boxes"></i> Inventory Management</h2>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Add Product</h5>
+            </div>
+            <div class="card-body">
+                <form id="productForm">
+                    <div class="mb-3">
+                        <label for="product_name" class="form-label">Product Name</label>
+                        <input type="text" class="form-control" id="product_name" name="name" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="product_description" class="form-label">Description</label>
+                        <textarea class="form-control" id="product_description" name="description" rows="3"></textarea>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="category" class="form-label">Category</label>
+                            <input type="text" class="form-control" id="category" name="category">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="unit_price" class="form-label">Unit Price</label>
+                            <input type="number" class="form-control" id="unit_price" name="unit_price" step="0.01">
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="quantity" class="form-label">Initial Quantity</label>
+                        <input type="number" class="form-control" id="quantity" name="quantity" min="0" value="0" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Add Product</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Update Quantity</h5>
+            </div>
+            <div class="card-body">
+                <form id="quantityForm">
+                    <div class="mb-3">
+                        <label for="product_select" class="form-label">Select Product</label>
+                        <select class="form-select" id="product_select" name="product_id" required>
+                            <option value="">Select Product</option>
+                            {% for product in products %}
+                            <option value="{{ product.id }}">{{ product.name }} (Current: {{ product.quantity }})</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="quantity_change" class="form-label">Quantity Change</label>
+                        <div class="input-group">
+                            <span class="input-group-text">+/-</span>
+                            <input type="number" class="form-control" id="quantity_change" name="quantity_change" required>
+                        </div>
+                        <small class="form-text text-muted">Use positive numbers to add, negative to subtract</small>
+                    </div>
+                    <button type="submit" class="btn btn-success">Update Quantity</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Product Inventory</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Product Name</th>
+                                <th>Description</th>
+                                <th>Category</th>
+                                <th>Quantity</th>
+                                <th>Unit Price</th>
+                                <th>Total Value</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for product in products %}
+                            <tr>
+                                <td>{{ product.name }}</td>
+                                <td>{{ product.description or '-' }}</td>
+                                <td>{{ product.category or '-' }}</td>
+                                <td>
+                                    <span class="badge bg-{{ 'success' if product.quantity > 10 else 'warning' if product.quantity > 0 else 'danger' }}">
+                                        {{ product.quantity }}
+                                    </span>
+                                </td>
+                                <td>${{ "%.2f"|format(product.unit_price) if product.unit_price else '-' }}</td>
+                                <td>${{ "%.2f"|format(product.quantity * product.unit_price) if product.unit_price else '-' }}</td>
+                                <td>
+                                    {% if product.quantity == 0 %}
+                                        <span class="badge bg-danger">Out of Stock</span>
+                                    {% elif product.quantity <= 5 %}
+                                        <span class="badge bg-warning">Low Stock</span>
+                                    {% else %}
+                                        <span class="badge bg-success">In Stock</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body text-center">
+                <h4 class="text-primary">{{ products|length }}</h4>
+                <p class="text-muted">Total Products</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body text-center">
+                <h4 class="text-success">{{ products|sum(attribute='quantity') }}</h4>
+                <p class="text-muted">Total Quantity</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body text-center">
+                <h4 class="text-info">${{ "%.2f"|format(products|sum(attribute='quantity') * products|sum(attribute='unit_price') / products|length if products|length > 0 else 0) }}</h4>
+                <p class="text-muted">Total Value</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Low Stock Alert</h5>
+            </div>
+            <div class="card-body">
+                {% set low_stock = products|selectattr('quantity', 'le', 5)|list %}
+                {% if low_stock %}
+                    <div class="alert alert-warning">
+                        <h6>Products with low stock:</h6>
+                        <ul class="mb-0">
+                            {% for product in low_stock %}
+                            <li>{{ product.name }} - {{ product.quantity }} units</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% else %}
+                    <div class="alert alert-success">
+                        <i class="fas fa-check-circle"></i> All products have sufficient stock.
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Out of Stock</h5>
+            </div>
+            <div class="card-body">
+                {% set out_of_stock = products|selectattr('quantity', 'equalto', 0)|list %}
+                {% if out_of_stock %}
+                    <div class="alert alert-danger">
+                        <h6>Products out of stock:</h6>
+                        <ul class="mb-0">
+                            {% for product in out_of_stock %}
+                            <li>{{ product.name }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% else %}
+                    <div class="alert alert-success">
+                        <i class="fas fa-check-circle"></i> No products are out of stock.
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.getElementById('productForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    const formData = new FormData(this);
+    const data = Object.fromEntries(formData);
+    
+    try {
+        const response = await fetch('/inventory/add_product', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data)
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+            alert(result.message);
+            location.reload();
+        } else {
+            alert(result.message);
+        }
+    } catch (error) {
+        alert('An error occurred. Please try again.');
+    }
+});
+
+document.getElementById('quantityForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    const formData = new FormData(this);
+    const data = Object.fromEntries(formData);
+    
+    try {
+        const response = await fetch('/inventory/update_quantity', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data)
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+            alert(result.message);
+            location.reload();
+        } else {
+            alert(result.message);
+        }
+    } catch (error) {
+        alert('An error occurred. Please try again.');
+    }
+});
+</script>
+{% endblock %}
