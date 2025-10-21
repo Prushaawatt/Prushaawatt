@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h3>HR</h3>
+  <div>
+    <a class="btn btn-primary btn-sm" href="{{ url_for('hr_add_employee') }}">Add Employee</a>
+    <a class="btn btn-secondary btn-sm" href="{{ url_for('hr_departments') }}">Departments</a>
+  </div>
+</div>
+<table class="table table-sm">
+  <thead><tr><th>Name</th><th>Role</th><th class="text-end">Salary</th><th>Department</th><th>Documents</th></tr></thead>
+  <tbody>
+    {% for e in employees %}
+    <tr>
+      <td>{{ e.name }}</td>
+      <td>{{ e.role }}</td>
+      <td class="text-end">${{ '%.2f'|format(e.salary) }}</td>
+      <td>{{ e.department or '-' }}</td>
+      <td>
+        {% if e.documents %}
+          <span class="badge bg-success">{{ e.documents|length }} file(s)</span>
+        {% else %}
+          <span class="badge bg-secondary">None</span>
+        {% endif %}
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

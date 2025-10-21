@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h3>Inventory</h3>
+  <div>
+    <a class="btn btn-primary btn-sm" href="{{ url_for('inventory_add_product') }}">Add Product</a>
+    <a class="btn btn-secondary btn-sm" href="{{ url_for('inventory_categories') }}">Categories</a>
+    <a class="btn btn-outline-secondary btn-sm" href="{{ url_for('inventory_movements') }}">Movements</a>
+  </div>
+</div>
+<table class="table table-sm">
+  <thead><tr><th>Name</th><th>Category</th><th class="text-end">Stock</th></tr></thead>
+  <tbody>
+    {% for p in products %}
+    <tr>
+      <td>{{ p.name }}</td>
+      <td>{{ p.category or '-' }}</td>
+      <td class="text-end">{{ p.stock }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

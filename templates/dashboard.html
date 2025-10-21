@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2 class="mb-3">Welcome, {{ current_user.full_name or current_user.email }}</h2>
+<div class="row g-3">
+  <div class="col-md-3">
+    <div class="card card-module">
+      <div class="card-body">
+        <h5>Finance</h5>
+        <p class="small-muted">Income, expenses, invoices, assets</p>
+        <a class="btn btn-outline-primary btn-sm" href="{{ url_for('finance_index') }}">Open</a>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="card card-module">
+      <div class="card-body">
+        <h5>HR</h5>
+        <p class="small-muted">Employees, documents, departments</p>
+        <a class="btn btn-outline-primary btn-sm" href="{{ url_for('hr_index') }}">Open</a>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="card card-module">
+      <div class="card-body">
+        <h5>Marketing</h5>
+        <p class="small-muted">Campaigns, leads, analytics</p>
+        <a class="btn btn-outline-primary btn-sm" href="{{ url_for('marketing_index') }}">Open</a>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="card card-module">
+      <div class="card-body">
+        <h5>Inventory</h5>
+        <p class="small-muted">Products, categories, stock</p>
+        <a class="btn btn-outline-primary btn-sm" href="{{ url_for('inventory_index') }}">Open</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="mt-4">
+  <h5>Notifications</h5>
+  {% if notifications %}
+    <ul class="list-group">
+      {% for note in notifications %}
+        <li class="list-group-item">{{ note }}</li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <div class="alert alert-info">No new notifications.</div>
+  {% endif %}
+</div>
+{% endblock %}
