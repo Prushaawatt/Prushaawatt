@@ -1,0 +1,232 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - ERP Demo System{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <h2><i class="fas fa-tachometer-alt me-2"></i>Dashboard</h2>
+        <p class="text-muted">Welcome back, {{ current_user.full_name }}! Here's an overview of your business.</p>
+    </div>
+</div>
+
+<!-- Stats Cards -->
+<div class="row mb-4">
+    <div class="col-md-6 col-lg-3">
+        <div class="stats-card">
+            <div class="card-title">Total Income</div>
+            <div class="card-text" id="total-income">${{ "{:,.2f}".format(total_income) }}</div>
+        </div>
+    </div>
+    <div class="col-md-6 col-lg-3">
+        <div class="stats-card">
+            <div class="card-title">Total Expenses</div>
+            <div class="card-text" id="total-expenses">${{ "{:,.2f}".format(total_expenses) }}</div>
+        </div>
+    </div>
+    <div class="col-md-6 col-lg-3">
+        <div class="stats-card">
+            <div class="card-title">Net Profit</div>
+            <div class="card-text" id="net-profit">${{ "{:,.2f}".format(net_profit) }}</div>
+        </div>
+    </div>
+    <div class="col-md-6 col-lg-3">
+        <div class="stats-card">
+            <div class="card-title">Active Employees</div>
+            <div class="card-text" id="total-employees">{{ total_employees }}</div>
+        </div>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-6 col-lg-3">
+        <div class="stats-card">
+            <div class="card-title">Total Products</div>
+            <div class="card-text" id="total-products">{{ total_products }}</div>
+        </div>
+    </div>
+    <div class="col-md-6 col-lg-3">
+        <div class="stats-card">
+            <div class="card-title">Total Leads</div>
+            <div class="card-text" id="total-leads">{{ total_leads }}</div>
+        </div>
+    </div>
+    <div class="col-md-6 col-lg-3">
+        <div class="stats-card">
+            <div class="card-title">Active Campaigns</div>
+            <div class="card-text" id="active-campaigns">{{ active_campaigns }}</div>
+        </div>
+    </div>
+    <div class="col-md-6 col-lg-3">
+        <div class="stats-card">
+            <div class="card-title">Company Assets</div>
+            <div class="card-text">$50,000</div>
+        </div>
+    </div>
+</div>
+
+<!-- Charts Row -->
+<div class="row mb-4">
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="fas fa-chart-line me-2"></i>Revenue vs Expenses</h5>
+            </div>
+            <div class="card-body">
+                <div class="chart-container">
+                    <canvas id="revenueChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="fas fa-chart-pie me-2"></i>Module Usage</h5>
+            </div>
+            <div class="card-body">
+                <div class="chart-container">
+                    <canvas id="moduleChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Recent Activity -->
+<div class="row">
+    <div class="col-lg-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="fas fa-history me-2"></i>Recent Transactions</h5>
+            </div>
+            <div class="card-body">
+                {% if recent_transactions %}
+                    <div class="table-responsive">
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Type</th>
+                                    <th>Amount</th>
+                                    <th>Description</th>
+                                    <th>Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for transaction in recent_transactions %}
+                                <tr>
+                                    <td>
+                                        <span class="badge bg-{{ 'success' if transaction.type == 'income' else 'danger' }}">
+                                            {{ transaction.type.title() }}
+                                        </span>
+                                    </td>
+                                    <td>${{ "{:,.2f}".format(transaction.amount) }}</td>
+                                    <td>{{ transaction.description }}</td>
+                                    <td>{{ transaction.date.strftime('%m/%d/%Y') }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <p class="text-muted">No recent transactions found.</p>
+                {% endif %}
+                <div class="text-center mt-3">
+                    <a href="{{ url_for('finance') }}" class="btn btn-outline-primary btn-sm">
+                        View All Transactions
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-lg-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="fas fa-user-friends me-2"></i>Recent Leads</h5>
+            </div>
+            <div class="card-body">
+                {% if recent_leads %}
+                    <div class="table-responsive">
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Company</th>
+                                    <th>Value</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for lead in recent_leads %}
+                                <tr>
+                                    <td>{{ lead.name }}</td>
+                                    <td>{{ lead.company }}</td>
+                                    <td>${{ "{:,.2f}".format(lead.value) }}</td>
+                                    <td>
+                                        <span class="badge bg-{{ 'primary' if lead.status == 'New' else 'warning' if lead.status == 'Contacted' else 'success' if lead.status == 'Converted' else 'danger' }}">
+                                            {{ lead.status }}
+                                        </span>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <p class="text-muted">No recent leads found.</p>
+                {% endif %}
+                <div class="text-center mt-3">
+                    <a href="{{ url_for('marketing') }}" class="btn btn-outline-primary btn-sm">
+                        View All Leads
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Quick Actions -->
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="fas fa-bolt me-2"></i>Quick Actions</h5>
+            </div>
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-md-3">
+                        <a href="{{ url_for('finance') }}" class="btn btn-outline-primary w-100">
+                            <i class="fas fa-plus me-2"></i>Add Transaction
+                        </a>
+                    </div>
+                    <div class="col-md-3">
+                        <a href="{{ url_for('hr') }}" class="btn btn-outline-success w-100">
+                            <i class="fas fa-user-plus me-2"></i>Add Employee
+                        </a>
+                    </div>
+                    <div class="col-md-3">
+                        <a href="{{ url_for('marketing') }}" class="btn btn-outline-warning w-100">
+                            <i class="fas fa-bullhorn me-2"></i>Create Campaign
+                        </a>
+                    </div>
+                    <div class="col-md-3">
+                        <a href="{{ url_for('inventory') }}" class="btn btn-outline-info w-100">
+                            <i class="fas fa-box me-2"></i>Add Product
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Initialize dashboard charts
+    document.addEventListener('DOMContentLoaded', function() {
+        initializeCharts();
+    });
+</script>
+{% endblock %}
