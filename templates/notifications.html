@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+
+{% block title %}Notifications - ERP System{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2"><i class="fas fa-bell"></i> Notifications</h1>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        {% if notifications %}
+        <div class="list-group">
+            {% for notification in notifications %}
+            <div class="list-group-item {% if not notification.is_read %}bg-light{% endif %}">
+                <div class="d-flex w-100 justify-content-between align-items-start">
+                    <div>
+                        <h6 class="mb-1">
+                            {% if notification.type == 'success' %}
+                                <i class="fas fa-check-circle text-success"></i>
+                            {% elif notification.type == 'warning' %}
+                                <i class="fas fa-exclamation-triangle text-warning"></i>
+                            {% elif notification.type == 'error' %}
+                                <i class="fas fa-times-circle text-danger"></i>
+                            {% else %}
+                                <i class="fas fa-info-circle text-info"></i>
+                            {% endif %}
+                            {% if not notification.is_read %}<strong>{% endif %}
+                            {{ notification.message }}
+                            {% if not notification.is_read %}</strong>{% endif %}
+                        </h6>
+                        <small class="text-muted">{{ notification.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</small>
+                    </div>
+                    {% if not notification.is_read %}
+                    <button class="btn btn-sm btn-outline-primary mark-read" data-id="{{ notification.id }}">
+                        Mark as Read
+                    </button>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="text-center py-5">
+            <i class="fas fa-bell-slash fa-3x text-muted mb-3"></i>
+            <p class="text-muted">No notifications yet</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<script>
+document.querySelectorAll('.mark-read').forEach(button => {
+    button.addEventListener('click', function() {
+        const notificationId = this.getAttribute('data-id');
+        fetch(`/notifications/${notificationId}/read`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                location.reload();
+            }
+        });
+    });
+});
+</script>
+{% endblock %}
