@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block title %}Invoices - ERP System{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2"><i class="fas fa-file-invoice"></i> Invoices & Quotations</h1>
+    <div class="btn-toolbar mb-2 mb-md-0">
+        <a href="{{ url_for('add_invoice') }}" class="btn btn-primary">
+            <i class="fas fa-plus"></i> Create Invoice/Quotation
+        </a>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Invoice #</th>
+                        <th>Type</th>
+                        <th>Client</th>
+                        <th>Issue Date</th>
+                        <th>Due Date</th>
+                        <th>Total</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for invoice in invoices %}
+                    <tr>
+                        <td><strong>{{ invoice.invoice_number }}</strong></td>
+                        <td>
+                            {% if invoice.type == 'invoice' %}
+                                <span class="badge bg-primary">Invoice</span>
+                            {% else %}
+                                <span class="badge bg-info">Quotation</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {{ invoice.client_name }}<br>
+                            <small class="text-muted">{{ invoice.client_email }}</small>
+                        </td>
+                        <td>{{ invoice.issue_date.strftime('%Y-%m-%d') }}</td>
+                        <td>{{ invoice.due_date.strftime('%Y-%m-%d') if invoice.due_date else 'N/A' }}</td>
+                        <td><strong>${{ "%.2f"|format(invoice.total) }}</strong></td>
+                        <td>
+                            {% if invoice.status == 'paid' %}
+                                <span class="badge bg-success">Paid</span>
+                            {% elif invoice.status == 'pending' %}
+                                <span class="badge bg-warning">Pending</span>
+                            {% else %}
+                                <span class="badge bg-danger">Cancelled</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

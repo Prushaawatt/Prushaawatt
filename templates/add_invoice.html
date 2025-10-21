@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+
+{% block title %}Create Invoice - ERP System{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2"><i class="fas fa-file-invoice"></i> Create Invoice/Quotation</h1>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <form method="POST" action="{{ url_for('add_invoice') }}">
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Type</label>
+                    <select class="form-select" name="type" required>
+                        <option value="invoice">Invoice</option>
+                        <option value="quotation">Quotation</option>
+                    </select>
+                </div>
+            </div>
+            
+            <h5 class="mt-4 mb-3">Client Information</h5>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Client Name</label>
+                    <input type="text" class="form-control" name="client_name" required>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Client Email</label>
+                    <input type="email" class="form-control" name="client_email">
+                </div>
+            </div>
+            
+            <h5 class="mt-4 mb-3">Invoice Details</h5>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Issue Date</label>
+                    <input type="date" class="form-control" name="issue_date" required value="{{ now().strftime('%Y-%m-%d') }}">
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Due Date</label>
+                    <input type="date" class="form-control" name="due_date">
+                </div>
+            </div>
+            
+            <div class="mb-3">
+                <label class="form-label">Items (one per line: Item Name - Quantity - Price)</label>
+                <textarea class="form-control" name="items" rows="4" placeholder="Example:&#10;Web Development - 1 - 1500&#10;Hosting Service - 12 - 50"></textarea>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Subtotal</label>
+                    <input type="number" step="0.01" class="form-control" name="subtotal" required>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Tax</label>
+                    <input type="number" step="0.01" class="form-control" name="tax" value="0">
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Total (auto-calculated)</label>
+                    <input type="text" class="form-control" readonly id="total_display" value="0.00">
+                </div>
+            </div>
+            
+            <div class="mt-4">
+                <button type="submit" class="btn btn-primary">Create Invoice</button>
+                <a href="{{ url_for('invoices') }}" class="btn btn-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const subtotalInput = document.querySelector('input[name="subtotal"]');
+    const taxInput = document.querySelector('input[name="tax"]');
+    const totalDisplay = document.getElementById('total_display');
+    
+    function updateTotal() {
+        const subtotal = parseFloat(subtotalInput.value) || 0;
+        const tax = parseFloat(taxInput.value) || 0;
+        const total = subtotal + tax;
+        totalDisplay.value = total.toFixed(2);
+    }
+    
+    subtotalInput.addEventListener('input', updateTotal);
+    taxInput.addEventListener('input', updateTotal);
+});
+</script>
+{% endblock %}

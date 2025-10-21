@@ -1,0 +1,144 @@
+{% extends "base.html" %}
+
+{% block title %}Profile - ERP System{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2"><i class="fas fa-user-circle"></i> My Profile</h1>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <i class="fas fa-user"></i> Personal Information
+            </div>
+            <div class="card-body">
+                <table class="table">
+                    <tr>
+                        <th>Full Name:</th>
+                        <td>{{ current_user.full_name }}</td>
+                    </tr>
+                    <tr>
+                        <th>Email:</th>
+                        <td>{{ current_user.email }}</td>
+                    </tr>
+                    <tr>
+                        <th>Phone:</th>
+                        <td>{{ current_user.phone or 'Not provided' }}</td>
+                    </tr>
+                    <tr>
+                        <th>Address:</th>
+                        <td>{{ current_user.address or 'Not provided' }}</td>
+                    </tr>
+                    <tr>
+                        <th>Role:</th>
+                        <td>
+                            {% if current_user.role == 'admin' %}
+                                <span class="badge bg-danger">Administrator</span>
+                            {% else %}
+                                <span class="badge bg-primary">User</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Member Since:</th>
+                        <td>{{ current_user.created_at.strftime('%Y-%m-%d') }}</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <i class="fas fa-building"></i> Company Information
+            </div>
+            <div class="card-body">
+                <table class="table">
+                    <tr>
+                        <th>Company Name:</th>
+                        <td>{{ current_user.company.name }}</td>
+                    </tr>
+                    <tr>
+                        <th>Industry:</th>
+                        <td>{{ current_user.company.industry or 'Not specified' }}</td>
+                    </tr>
+                    <tr>
+                        <th>Location:</th>
+                        <td>{{ current_user.company.location or 'Not specified' }}</td>
+                    </tr>
+                    <tr>
+                        <th>Subscription Plan:</th>
+                        <td>
+                            <span class="badge bg-primary">{{ current_user.company.subscription_plan }}</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Company Since:</th>
+                        <td>{{ current_user.company.created_at.strftime('%Y-%m-%d') }}</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-3">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <i class="fas fa-crown"></i> Subscription Details
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="text-center p-3 {% if current_user.company.subscription_plan == 'Free' %}border border-primary{% endif %}">
+                            <h5>Free</h5>
+                            <h3>$0</h3>
+                            <p class="text-muted">Per month</p>
+                            <ul class="list-unstyled">
+                                <li><i class="fas fa-check text-success"></i> Basic features</li>
+                                <li><i class="fas fa-check text-success"></i> Up to 5 users</li>
+                                <li><i class="fas fa-check text-success"></i> Email support</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="text-center p-3 {% if current_user.company.subscription_plan == 'Basic' %}border border-primary{% endif %}">
+                            <h5>Basic</h5>
+                            <h3>$29</h3>
+                            <p class="text-muted">Per month</p>
+                            <ul class="list-unstyled">
+                                <li><i class="fas fa-check text-success"></i> All Free features</li>
+                                <li><i class="fas fa-check text-success"></i> Up to 25 users</li>
+                                <li><i class="fas fa-check text-success"></i> Priority support</li>
+                                <li><i class="fas fa-check text-success"></i> Advanced reports</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="text-center p-3 {% if current_user.company.subscription_plan == 'Premium' %}border border-primary{% endif %}">
+                            <h5>Premium</h5>
+                            <h3>$99</h3>
+                            <p class="text-muted">Per month</p>
+                            <ul class="list-unstyled">
+                                <li><i class="fas fa-check text-success"></i> All Basic features</li>
+                                <li><i class="fas fa-check text-success"></i> Unlimited users</li>
+                                <li><i class="fas fa-check text-success"></i> 24/7 support</li>
+                                <li><i class="fas fa-check text-success"></i> Custom integrations</li>
+                                <li><i class="fas fa-check text-success"></i> API access</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="text-center mt-3">
+                    <p class="text-muted">Current Plan: <strong>{{ current_user.company.subscription_plan }}</strong></p>
+                    <button class="btn btn-primary" disabled>Upgrade Plan (Demo Only)</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

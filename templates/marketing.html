@@ -1,0 +1,262 @@
+{% extends "base.html" %}
+
+{% block title %}Marketing - ERP System{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2"><i class="fas fa-bullhorn"></i> Marketing Module</h1>
+</div>
+
+<div class="row">
+    <div class="col-md-3">
+        <div class="stat-card primary">
+            <h6 class="text-white-50">Total Leads</h6>
+            <h3>{{ total_leads }}</h3>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-card success">
+            <h6 class="text-white-50">Converted</h6>
+            <h3>{{ converted_leads }}</h3>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-card info">
+            <h6 class="text-white-50">Conversion Rate</h6>
+            <h3>{{ "%.1f"|format(conversion_rate) }}%</h3>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-card warning">
+            <h6 class="text-white-50">Campaigns</h6>
+            <h3>{{ campaigns|length }}</h3>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <span><i class="fas fa-rocket"></i> Marketing Campaigns</span>
+        <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#addCampaignModal">
+            <i class="fas fa-plus"></i> Add Campaign
+        </button>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Campaign Name</th>
+                        <th>Type</th>
+                        <th>Budget</th>
+                        <th>Start Date</th>
+                        <th>End Date</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for campaign in campaigns %}
+                    <tr>
+                        <td><strong>{{ campaign.name }}</strong></td>
+                        <td><span class="badge bg-secondary">{{ campaign.type }}</span></td>
+                        <td>${{ "%.2f"|format(campaign.budget) if campaign.budget else 'N/A' }}</td>
+                        <td>{{ campaign.start_date.strftime('%Y-%m-%d') if campaign.start_date else 'N/A' }}</td>
+                        <td>{{ campaign.end_date.strftime('%Y-%m-%d') if campaign.end_date else 'N/A' }}</td>
+                        <td>
+                            {% if campaign.status == 'active' %}
+                                <span class="badge bg-success">Active</span>
+                            {% elif campaign.status == 'completed' %}
+                                <span class="badge bg-primary">Completed</span>
+                            {% else %}
+                                <span class="badge bg-warning">Paused</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <span><i class="fas fa-user-plus"></i> Leads Management</span>
+        <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#addLeadModal">
+            <i class="fas fa-plus"></i> Add Lead
+        </button>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Company</th>
+                        <th>Contact</th>
+                        <th>Source</th>
+                        <th>Status</th>
+                        <th>Created</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for lead in leads %}
+                    <tr>
+                        <td><strong>{{ lead.name }}</strong></td>
+                        <td>{{ lead.company_name or 'N/A' }}</td>
+                        <td>
+                            {{ lead.email }}<br>
+                            <small class="text-muted">{{ lead.phone }}</small>
+                        </td>
+                        <td><span class="badge bg-info">{{ lead.source }}</span></td>
+                        <td>
+                            <form method="POST" action="{{ url_for('update_lead_status', id=lead.id) }}" style="display: inline;">
+                                <select class="form-select form-select-sm" name="status" onchange="this.form.submit()">
+                                    <option value="new" {% if lead.status == 'new' %}selected{% endif %}>New</option>
+                                    <option value="contacted" {% if lead.status == 'contacted' %}selected{% endif %}>Contacted</option>
+                                    <option value="qualified" {% if lead.status == 'qualified' %}selected{% endif %}>Qualified</option>
+                                    <option value="converted" {% if lead.status == 'converted' %}selected{% endif %}>Converted</option>
+                                    <option value="lost" {% if lead.status == 'lost' %}selected{% endif %}>Lost</option>
+                                </select>
+                            </form>
+                        </td>
+                        <td>{{ lead.created_at.strftime('%Y-%m-%d') }}</td>
+                        <td>
+                            <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#viewLeadModal{{ lead.id }}">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    
+                    <!-- View Lead Modal -->
+                    <div class="modal fade" id="viewLeadModal{{ lead.id }}" tabindex="-1">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">Lead Details</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <p><strong>Name:</strong> {{ lead.name }}</p>
+                                    <p><strong>Company:</strong> {{ lead.company_name }}</p>
+                                    <p><strong>Email:</strong> {{ lead.email }}</p>
+                                    <p><strong>Phone:</strong> {{ lead.phone }}</p>
+                                    <p><strong>Source:</strong> {{ lead.source }}</p>
+                                    <p><strong>Status:</strong> {{ lead.status }}</p>
+                                    <p><strong>Notes:</strong><br>{{ lead.notes or 'No notes' }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Add Campaign Modal -->
+<div class="modal fade" id="addCampaignModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add Campaign</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form method="POST" action="{{ url_for('add_campaign') }}">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Campaign Name</label>
+                        <input type="text" class="form-control" name="name" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Type</label>
+                        <select class="form-select" name="type" required>
+                            <option value="Email">Email</option>
+                            <option value="Social Media">Social Media</option>
+                            <option value="PPC">PPC Ads</option>
+                            <option value="Content">Content Marketing</option>
+                            <option value="Event">Event</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Description</label>
+                        <textarea class="form-control" name="description" rows="3"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Budget</label>
+                        <input type="number" step="0.01" class="form-control" name="budget">
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Start Date</label>
+                            <input type="date" class="form-control" name="start_date" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">End Date</label>
+                            <input type="date" class="form-control" name="end_date">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Add Campaign</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Add Lead Modal -->
+<div class="modal fade" id="addLeadModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add Lead</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form method="POST" action="{{ url_for('add_lead') }}">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Name</label>
+                        <input type="text" class="form-control" name="name" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Email</label>
+                        <input type="email" class="form-control" name="email">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Phone</label>
+                        <input type="tel" class="form-control" name="phone">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Company Name</label>
+                        <input type="text" class="form-control" name="company_name">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Source</label>
+                        <select class="form-select" name="source" required>
+                            <option value="Website">Website</option>
+                            <option value="Referral">Referral</option>
+                            <option value="Campaign">Campaign</option>
+                            <option value="Cold Call">Cold Call</option>
+                            <option value="Social Media">Social Media</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Notes</label>
+                        <textarea class="form-control" name="notes" rows="3"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Add Lead</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
