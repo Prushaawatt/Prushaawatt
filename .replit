@@ -1,0 +1,15 @@
+run = "python run.py"
+language = "python3"
+
+[nix]
+channel = "stable-22_11"
+
+[env]
+PYTHONPATH = "/workspace"
+FLASK_APP = "app.py"
+
+[gitHubImport]
+requiredFiles = [".replit", "replit.nix", "requirements.txt"]
+
+[deployment]
+run = ["sh", "-c", "python run.py"]
