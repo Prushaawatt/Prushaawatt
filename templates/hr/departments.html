@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block content %}
+<h3 class="mb-3">Departments</h3>
+<form class="row g-3 mb-3" method="post">
+  <div class="col-auto">
+    <input class="form-control" name="name" placeholder="New Department">
+  </div>
+  <div class="col-auto">
+    <button class="btn btn-primary" type="submit">Add</button>
+  </div>
+</form>
+<ul class="list-group">
+  {% for d in departments %}
+  <li class="list-group-item d-flex justify-content-between align-items-center">
+    {{ d.name }}
+    <span class="badge bg-secondary">{{ d.employees|length }} employees</span>
+  </li>
+  {% endfor %}
+</ul>
+{% endblock %}

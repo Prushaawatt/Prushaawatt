@@ -1,0 +1,8 @@
+body { padding-top: 70px; }
+.navbar-brand { font-weight: 700; }
+.card-module { transition: transform 0.1s ease, box-shadow 0.1s ease; }
+.card-module:hover { transform: translateY(-2px); box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+.table thead th { white-space: nowrap; }
+.form-section { margin-bottom: 1.5rem; }
+.badge-status { font-size: 0.8rem; }
+.small-muted { font-size: 0.9rem; color: #6c757d; }

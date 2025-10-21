@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-md-6">
+    <div class="card">
+      <div class="card-header">Dummy Payment</div>
+      <div class="card-body">
+        <p>Subscription: <strong>{{ subscription }}</strong></p>
+        <p>Amount: <strong>{{ amount }}</strong></p>
+        <form method="post">
+          <div class="mb-3">
+            <label class="form-label">Card Number</label>
+            <input class="form-control" name="card" placeholder="4242 4242 4242 4242" required>
+          </div>
+          <div class="row">
+            <div class="col">
+              <label class="form-label">Expiry</label>
+              <input class="form-control" name="expiry" placeholder="12/34" required>
+            </div>
+            <div class="col">
+              <label class="form-label">CVC</label>
+              <input class="form-control" name="cvc" placeholder="123" required>
+            </div>
+          </div>
+          <button class="btn btn-success mt-3" type="submit">Pay</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

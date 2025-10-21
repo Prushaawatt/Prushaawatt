@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h3>Marketing</h3>
+  <div>
+    <a class="btn btn-primary btn-sm" href="{{ url_for('marketing_add_campaign') }}">Add Campaign</a>
+    <a class="btn btn-secondary btn-sm" href="{{ url_for('marketing_add_lead') }}">Add Lead</a>
+  </div>
+</div>
+<div class="row g-3">
+  <div class="col-md-6">
+    <div class="card">
+      <div class="card-header">Campaigns</div>
+      <div class="card-body">
+        <table class="table table-sm">
+          <thead><tr><th>Name</th><th>Channel</th><th>Status</th></tr></thead>
+          <tbody>
+            {% for c in campaigns %}
+            <tr>
+              <td>{{ c.name }}</td>
+              <td>{{ c.channel }}</td>
+              <td><span class="badge {{ 'bg-success' if c.status=='Running' else 'bg-secondary' }}">{{ c.status }}</span></td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-6">
+    <div class="card">
+      <div class="card-header">Leads</div>
+      <div class="card-body">
+        <table class="table table-sm">
+          <thead><tr><th>Name</th><th>Email</th><th>Status</th></tr></thead>
+          <tbody>
+            {% for l in leads %}
+            <tr>
+              <td>{{ l.name }}</td>
+              <td>{{ l.email }}</td>
+              <td>{{ l.status }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="mt-3">
+  <div class="card">
+    <div class="card-header">Simple Analytics</div>
+    <div class="card-body">
+      <div class="row text-center">
+        <div class="col"><div class="h4">{{ metrics.leads }}</div><div class="small-muted">Leads</div></div>
+        <div class="col"><div class="h4">{{ metrics.clients }}</div><div class="small-muted">Clients</div></div>
+        <div class="col"><div class="h4">{{ metrics.campaigns }}</div><div class="small-muted">Campaigns</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
