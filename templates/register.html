@@ -1,0 +1,134 @@
+{% extends "base.html" %}
+
+{% block title %}Register - ERP Demo System{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+        <div class="card">
+            <div class="card-header text-center">
+                <h4 class="mb-0"><i class="fas fa-user-plus me-2"></i>Create Account</h4>
+            </div>
+            <div class="card-body">
+                <form method="POST" class="needs-validation" novalidate>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h5 class="text-primary mb-3"><i class="fas fa-user me-2"></i>Personal Information</h5>
+                            
+                            <div class="mb-3">
+                                <label for="username" class="form-label">Username *</label>
+                                <input type="text" class="form-control" id="username" name="username" required>
+                                <div class="invalid-feedback">
+                                    Please enter a username.
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="email" class="form-label">Email *</label>
+                                <input type="email" class="form-control" id="email" name="email" required>
+                                <div class="invalid-feedback">
+                                    Please enter a valid email.
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="password" class="form-label">Password *</label>
+                                <input type="password" class="form-control" id="password" name="password" required>
+                                <div class="invalid-feedback">
+                                    Please enter a password.
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="full_name" class="form-label">Full Name *</label>
+                                <input type="text" class="form-control" id="full_name" name="full_name" required>
+                                <div class="invalid-feedback">
+                                    Please enter your full name.
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="phone" class="form-label">Phone</label>
+                                <input type="tel" class="form-control" id="phone" name="phone">
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="address" class="form-label">Address</label>
+                                <textarea class="form-control" id="address" name="address" rows="3"></textarea>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <h5 class="text-primary mb-3"><i class="fas fa-building me-2"></i>Company Information</h5>
+                            
+                            <div class="mb-3">
+                                <label for="company_name" class="form-label">Company Name *</label>
+                                <input type="text" class="form-control" id="company_name" name="company_name" required>
+                                <div class="invalid-feedback">
+                                    Please enter your company name.
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="industry" class="form-label">Industry</label>
+                                <select class="form-select" id="industry" name="industry">
+                                    <option value="">Select Industry</option>
+                                    <option value="Technology">Technology</option>
+                                    <option value="Healthcare">Healthcare</option>
+                                    <option value="Finance">Finance</option>
+                                    <option value="Retail">Retail</option>
+                                    <option value="Manufacturing">Manufacturing</option>
+                                    <option value="Education">Education</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="company_location" class="form-label">Company Location</label>
+                                <input type="text" class="form-control" id="company_location" name="company_location">
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="subscription" class="form-label">Subscription Plan *</label>
+                                <select class="form-select" id="subscription" name="subscription" required>
+                                    <option value="">Select Plan</option>
+                                    <option value="Free">Free - $0/month</option>
+                                    <option value="Basic">Basic - $29/month</option>
+                                    <option value="Premium">Premium - $99/month</option>
+                                </select>
+                                <div class="invalid-feedback">
+                                    Please select a subscription plan.
+                                </div>
+                            </div>
+                            
+                            <div class="alert alert-info">
+                                <h6><i class="fas fa-info-circle me-2"></i>Plan Features</h6>
+                                <ul class="mb-0 small">
+                                    <li><strong>Free:</strong> Basic features, 5 users</li>
+                                    <li><strong>Basic:</strong> All modules, 25 users</li>
+                                    <li><strong>Premium:</strong> Full features, unlimited users</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="d-grid mt-4">
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i class="fas fa-user-plus me-2"></i>Create Account
+                        </button>
+                    </div>
+                </form>
+                
+                <hr>
+                
+                <div class="text-center">
+                    <p class="mb-0">Already have an account?</p>
+                    <a href="{{ url_for('login') }}" class="btn btn-outline-primary">
+                        <i class="fas fa-sign-in-alt me-2"></i>Login Here
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
